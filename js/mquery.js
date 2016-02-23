@@ -51,23 +51,11 @@ mQuery.prototype.add = function (selector, context) {
     delete this.selector;
     return this;
 };
-mQuery.prototype.addClass = function(value) {
-    var className;
-    switch (typeof value) {
-        case 'function' :
-            className = value();
-            break;
-        case 'string':
-            className = value;
-            break;
-    }
-
-    for(var i = 0; i < this.length; i++) {
-        this[i].classList.add(value);
-    }
+mQuery.prototype.each = function(call){
+     for(var i = 0; i < this.length; i++) {
+        call(i, this[i]);
+     }
 };
-
-
 var m$ = function(selector, context) {
 
     var mainObj = new mQuery();
@@ -79,28 +67,9 @@ var m$ = function(selector, context) {
     }
     mainObj.length = rsp.length;
     mainObj.selector = rsp.selector;
+    mainObj.splice = function() {
+        return true;
+    }
 
     return mainObj;
 }
-
-
-// var ctx = m$('.wrapp');
-// var m$res = m$('li').addClass(function() {});
-var smm = 'some string';
-var fn = function (argument) {
-    return 1;
-}
-
-
-var $res = $('.some-cls').addClass(function(arg1, arg2, arg3) {
-    console.log(arguments);
-});
-var arr = [1,2,"some string of daata"];
-var nArr = new Array(1, 2, "some string");
-var oArr = Object.create(null);
-oArr[0] = 0;
-oArr['1'] = 1;
-
-// console.log(m$res);
-// console.log($res);
-console.log(oArr);
