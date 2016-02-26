@@ -1,4 +1,64 @@
+// TODO:
+// [ ] add corect object for dom obj selector
 'use strict';
+
+var mQuery = function(selector, context) {
+    // jQuery
+    return new mQuery.fn.init(selector, context);
+}
+mQuery.fn = mQuery.prototype = {
+    version: 0.01,
+};
+
+// init is a constructor
+var init = mQuery.fn.init = function(selector, context) {
+
+    if(!selector) {
+        return this;
+    }
+
+    var rsp = makeQuery(selector, context);
+
+    for (var i = 0; i < rsp.selected.length; i++) {
+        this[i] = rsp.selected[i];
+    }
+    this.length = rsp.length;
+    this.selector = rsp.selector;
+    this.splice = function() {
+        return true;
+    }
+
+    return this;
+}
+
+mQuery.extend = mQuery.fn.extend = function(deep, obj1, obj2) {
+    var o1, o2;
+    if(typeof deep == 'boolean') {
+        o1 = obj1;
+        o2 = obj2;
+    } else {
+        o1 = deep;
+        o2 = obj1;
+    }
+    if(arguments.length == 1) {
+        return this;
+    }
+
+    function mergeObj(ob1, ob2) {
+        for(var key in ob2) {
+            if(typeof ob2[key] == 'object' && deep) {
+                mergeObj(ob1[key], ob2[key]);
+            } else {
+                ob1[key] = ob2[key];
+            }
+        }
+    }
+    mergeObj(o1, o2);
+
+    return o1;
+}
+
+
 
 function nodeListToArr(list) {
     var arr = [];
@@ -18,6 +78,14 @@ function mainSelect(sel) {
 }
 
 function makeQuery(selector, context) {
+    var rsp = {};
+
+    if(selector instanceof HTMLElement) {
+        rsp.selected = [selector];
+        rsp.context = selector;
+        return rsp;
+    }
+
     if(selector) {
         var sel;
         // build selector
@@ -30,9 +98,9 @@ function makeQuery(selector, context) {
         } else {
             sel = selector;
         }
-        var rsp = {};
-        var selNodes = mainSelect(sel);
 
+
+        var selNodes = mainSelect(sel);
         rsp.selected = selNodes.nodes;
         rsp.length = selNodes.length;
         rsp.selector = sel;
@@ -40,7 +108,7 @@ function makeQuery(selector, context) {
     }
 }
 
-function mQuery() {};
+// function mQuery() {};
 
 mQuery.prototype.add = function (selector, context) {
     var rsp = makeQuery(selector, context);
@@ -56,20 +124,4 @@ mQuery.prototype.each = function(call){
         call(i, this[i]);
      }
 };
-var m$ = function(selector, context) {
-
-    var mainObj = new mQuery();
-
-    var rsp = makeQuery(selector, context);
-
-    for (var i = 0; i < rsp.selected.length; i++) {
-        mainObj[i] = rsp.selected[i];
-    }
-    mainObj.length = rsp.length;
-    mainObj.selector = rsp.selector;
-    mainObj.splice = function() {
-        return true;
-    }
-
-    return mainObj;
-}
+// mQuery.fn = mQuery.prototype;
