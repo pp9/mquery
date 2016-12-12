@@ -1,5 +1,12 @@
-var $res = $('.some-cls');
-var m$res = m$('.some-cls');
+// $(document).ajaxComplete(function (e, jqXHR, ajaxOptions) {
+//     console.log(arguments);
+// });
 
-// console.log($res);
-console.log(m$res);
+// m$('h2')
+
+// // console.log($(document));
+// $.get('package.json').then(function () {
+//     $.get('package.json');
+// });
+
+console.log(m$(document));

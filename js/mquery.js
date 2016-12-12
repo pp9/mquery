@@ -1,5 +1,49 @@
 'use strict';
 
+// this is eqivalent of core.js in jquery
+// TODO: this part is kinda mess
+var m$, mQuery;
+
+mQuery = function(selector, context) {
+    // return mQuery.prototype.init(sel, ctx);
+    var mainObj =  new mQuery.prototype.init(selector, context);
+    // var rsp = makeQuery(selector, context);
+    for (var i = 0; i < rsp.selected.length; i++) {
+        mainObj[i] = rsp.selected[i];
+    }
+    mainObj.length = rsp.length;
+    mainObj.selector = rsp.selector;
+    mainObj.splice = function() {
+        return true;
+    }
+    return mainObj;
+}
+
+mQuery.prototype.init = function (selector, context) {
+    if(selector === document) {
+        // console.log('doc');
+        return document;
+    }
+    return makeQuery(selector, context);
+    // return rsp;
+}
+
+
+mQuery.extend = mQuery.prototype.extend = function(extentionObject) {
+    if(typeof extentionObject !== 'object') return;
+
+    for(let key in extentionObject) {
+        this[key] = extentionObject[key];
+    }
+}
+
+mQuery.extend({
+    each: function(arr, callback) {
+        // this method id dumb i should remove it, or replace with _.each implementaion
+        arr.forEach(callback);
+    }
+})
+
 function nodeListToArr(list) {
     var arr = [];
     for (var i = 0; i < list.length; i++) {
@@ -18,6 +62,7 @@ function mainSelect(sel) {
 }
 
 function makeQuery(selector, context) {
+    // console.log(selector);
     if(selector) {
         var sel;
         // build selector
@@ -32,6 +77,7 @@ function makeQuery(selector, context) {
         }
         var rsp = {};
         var selNodes = mainSelect(sel);
+        // console.log(selNodes);
 
         rsp.selected = selNodes.nodes;
         rsp.length = selNodes.length;
@@ -40,7 +86,6 @@ function makeQuery(selector, context) {
     }
 }
 
-function mQuery() {};
 
 mQuery.prototype.add = function (selector, context) {
     var rsp = makeQuery(selector, context);
@@ -51,25 +96,10 @@ mQuery.prototype.add = function (selector, context) {
     delete this.selector;
     return this;
 };
-mQuery.prototype.each = function(call){
-     for(var i = 0; i < this.length; i++) {
-        call(i, this[i]);
-     }
-};
-var m$ = function(selector, context) {
 
-    var mainObj = new mQuery();
-
-    var rsp = makeQuery(selector, context);
-
-    for (var i = 0; i < rsp.selected.length; i++) {
-        mainObj[i] = rsp.selected[i];
-    }
-    mainObj.length = rsp.length;
-    mainObj.selector = rsp.selector;
-    mainObj.splice = function() {
-        return true;
-    }
-
-    return mainObj;
-}
+m$ = mQuery;
+// mQuery.prototype.each = function(cb){
+//      for(var i = 0; i < this.length; i++) {
+//         cb.call(null, i, this[i]);
+//      }
+// };
