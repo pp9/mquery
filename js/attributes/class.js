@@ -2,28 +2,50 @@
 // [x] implement callback
 // [] add `state` argument for toggleClass
 
-
-mQuery.prototype.addClass = function(value) {
-    var className;
-    var i = 0;
-    switch (typeof value) {
-        case 'function' :
-            this.each(function(i, el) {
-                className = value(i, el.classList.toString());
-                if(className) el.classList.add(className);
-            });
-            break;
-        case 'string':
-            className = value;
-            while(el = this[i++]) {
-                el.classList.add(value);
-            }
-            // for(var i = 0; i < this.length; i++) {
-            //     this[i].classList.add(value);
-            // }
-            break;
+mQuery.prototype.extend({
+    addClass: function(value) {
+        var className;
+        var i = 0;
+        switch (typeof value) {
+            case 'function' :
+                this.each(function(i, el) {
+                    className = value(i, el.classList.toString());
+                    if(className) el.classList.add(className);
+                });
+                break;
+            case 'string':
+                className = value;
+                while(el = this[i++]) {
+                    el.classList.add(value);
+                }
+                // for(var i = 0; i < this.length; i++) {
+                //     this[i].classList.add(value);
+                // }
+                break;
+        }
     }
-};
+})
+// mQuery.prototype.addClass = function(value) {
+//     var className;
+//     var i = 0;
+//     switch (typeof value) {
+//         case 'function' :
+//             this.each(function(i, el) {
+//                 className = value(i, el.classList.toString());
+//                 if(className) el.classList.add(className);
+//             });
+//             break;
+//         case 'string':
+//             className = value;
+//             while(el = this[i++]) {
+//                 el.classList.add(value);
+//             }
+//             // for(var i = 0; i < this.length; i++) {
+//             //     this[i].classList.add(value);
+//             // }
+//             break;
+//     }
+// };
 
 mQuery.prototype.removeClass = function(value) {
     switch (typeof value) {

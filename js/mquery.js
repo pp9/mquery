@@ -1,4 +1,29 @@
 'use strict';
+// this is eqivalent of core.js in jquery
+// TODO: this part is kinda mess
+
+// JQUERY
+// 0:li.test.cls
+// 1:li.test
+// 2:li.test
+// 3:li
+// context:document
+// length:4
+// prevObject:jQuery.fn.init[1]
+// selector:"li"
+
+
+// Test.prototype.init = function() {
+//     return {test: '123'};
+// }
+
+// function Test() {
+//     return new Test.prototype.init();
+// }
+
+
+// let t = new Test();
+// console.log(t);
 
 function nodeListToArr(list) {
     var arr = [];
@@ -8,13 +33,19 @@ function nodeListToArr(list) {
     return arr;
 }
 
+
+
 function mainSelect(sel) {
-    var selectResult = document.querySelectorAll(sel);
-    var arr = nodeListToArr(selectResult);
-    var resp = {};
-    resp.nodes = arr;
-    resp.length = selectResult.length;
-    return resp;
+    var ret = {
+        nodes: [],
+        length: 0
+    }
+
+    var selectResult = nodeListToArr(document.querySelectorAll(sel));
+
+    ret.nodes = selectResult;
+    ret.length = selectResult.length;
+    return ret;
 }
 
 function makeQuery(selector, context) {
@@ -32,44 +63,73 @@ function makeQuery(selector, context) {
         }
         var rsp = {};
         var selNodes = mainSelect(sel);
-
         rsp.selected = selNodes.nodes;
         rsp.length = selNodes.length;
         rsp.selector = sel;
         return rsp;
     }
 }
+var m$, mQuery;
 
-function mQuery() {};
-
-mQuery.prototype.add = function (selector, context) {
-    var rsp = makeQuery(selector, context);
-
-    for (var i = 0, b = this.length; i < rsp.length; i++, b++) {
-        this[b] = rsp.selected[i];
-    }
-    delete this.selector;
-    return this;
-};
-mQuery.prototype.each = function(call){
-     for(var i = 0; i < this.length; i++) {
-        call(i, this[i]);
-     }
-};
-var m$ = function(selector, context) {
-
-    var mainObj = new mQuery();
-
-    var rsp = makeQuery(selector, context);
-
-    for (var i = 0; i < rsp.selected.length; i++) {
-        mainObj[i] = rsp.selected[i];
-    }
-    mainObj.length = rsp.length;
-    mainObj.selector = rsp.selector;
-    mainObj.splice = function() {
-        return true;
-    }
-
-    return mainObj;
+mQuery = function(selector, context) {
+    return new mQuery.prototype.init(selector, context);
 }
+
+mQuery.prototype.init = function (selector, context) {
+    // this is constructor function
+    // var mqWrapper = {
+    //     context: context,
+    //     length: 0,
+    //     prevObject: this,
+    //     selector: selector
+    // }
+    // var main = {};
+
+    var qr = makeQuery(selector, context);
+    qr.selected.forEach((el, i) => {this[i] = el});
+    // console.log(qr);
+    this.length = qr.selected.length;
+    this.selector = qr.selector;
+    this.context = context || document;
+    this.prevObject = this;
+    return this;
+}
+
+
+// mQuery.prototype.init.prototype
+
+
+mQuery.extend = mQuery.prototype.extend = function(extentionObject) {
+    if(typeof extentionObject !== 'object') return;
+
+    for(let key in extentionObject) {
+        this[key] = extentionObject[key];
+    }
+}
+
+mQuery.extend({
+    each: function(arr, callback) {
+        // this method id dumb i should remove it, or replace with _.each implementaion
+        arr.forEach(callback);
+    },
+    add: function (selector, context) {
+        var rsp = makeQuery(selector, context);
+
+        for (var i = 0, b = this.length; i < rsp.length; i++, b++) {
+            this[b] = rsp.selected[i];
+        }
+        delete this.selector;
+        return this;
+    }
+});
+
+
+
+
+
+m$ = mQuery;
+// mQuery.prototype.each = function(cb){
+//      for(var i = 0; i < this.length; i++) {
+//         cb.call(null, i, this[i]);
+//      }
+// };
