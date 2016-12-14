@@ -33,7 +33,7 @@ mQuery.Event = function() {
 // which:1
 }
 mQuery.prototype.on = function(eventName, callback) {
-    this.each(function(i, el) {
-        el.addEventListener(eventName, callback);
-    })
+    this.each(function(i, e) {
+        e.addEventListener(eventName, callback);
+    });
 }

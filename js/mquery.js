@@ -121,7 +121,8 @@ mQuery.extend = mQuery.prototype.extend = function(extentionObject) {
 mQuery.extend({
     each: function(arr, callback) {
         // this method id dumb i should remove it, or replace with _.each implementaion
-        arr.forEach(callback);
+        nodeListToArr(arr).forEach(callback);
+        // arr.forEach(callback);
     },
     add: function (selector, context) {
         var rsp = makeQuery(selector, context);
@@ -134,13 +135,16 @@ mQuery.extend({
     }
 });
 
+// mQuery.prototype.each()
+
 
 
 
 
 m$ = mQuery;
-// mQuery.prototype.each = function(cb){
-//      for(var i = 0; i < this.length; i++) {
-//         cb.call(null, i, this[i]);
-//      }
-// };
+
+mQuery.prototype.each = function(cb){
+     for(var i = 0; i < this.length; i++) {
+        cb.call(null, i, this[i]);
+     }
+};
