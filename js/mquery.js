@@ -75,25 +75,36 @@ mQuery = function(selector, context) {
     return new mQuery.prototype.init(selector, context);
 }
 
+
 mQuery.prototype.init = function (selector, context) {
     // this is constructor function
-    // var mqWrapper = {
-    //     context: context,
-    //     length: 0,
-    //     prevObject: this,
-    //     selector: selector
-    // }
-    // var main = {};
+    var qr = {};
+    if(selector === document) {
+        // attach global event cbs
+        // document.ajaxComplete = function () {
+        //     console.log('ajaxComplete');
+        // }
+        // document.ajaxError = function () {
+        //     console.log('ajax error');
+        // }
+        // document.ajaxSend = function () {
+        //     console.log('ajaxSend');
+        // }
+        qr.selected = [document];
+    } else {
+        qr = makeQuery(selector, context);
+    }
 
-    var qr = makeQuery(selector, context);
     qr.selected.forEach((el, i) => {this[i] = el});
     // console.log(qr);
     this.length = qr.selected.length;
-    this.selector = qr.selector;
+    this.selector = qr.selector || document;
     this.context = context || document;
     this.prevObject = this;
     return this;
 }
+
+mQuery.prototype.init.prototype = mQuery.prototype;
 
 
 // mQuery.prototype.init.prototype

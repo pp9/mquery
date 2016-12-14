@@ -1,2 +1,1 @@
-console.log(m$('li'));
-console.log($('li'));
+// console.log(m$(document));

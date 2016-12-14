@@ -12,3 +12,8 @@ mQuery.get = function(url, next) {
     // console.log(url);
     if(typeof next === 'function') next();
 }
+mQuery.prototype.extend({
+    ajaxError: function (cb) {
+        
+    }
+})
